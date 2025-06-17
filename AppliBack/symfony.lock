@@ -17,6 +17,7 @@
             "ref": "620b57f496f2e599a6015a9fa222c2ee0a32adcb"
         },
         "files": [
+
             "./config/packages/doctrine.yaml",
             "./src/Entity/.gitignore",
             "./src/Repository/.gitignore"
