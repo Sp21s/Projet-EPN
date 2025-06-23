@@ -1,5 +1,6 @@
 import React from 'react';
 import ModalEntreprise from './ModalEntreprise';
+import Dropdown from './Dropdown';
 import {
   ScrollView,
   StatusBar,
@@ -17,8 +18,8 @@ import {
 } from 'react-native';
 
 const entreprises = [
-  { id: '1', nom: 'Libraire L\'oiseau Lire', description: 'librarie.', detail: "remise de 5%", logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Microsoft_logo.svg/200px-Microsoft_logo.svg.png' },
-  { id: '2', nom: 'Apple', description: 'Électronique grand public et logiciels innovants.' },
+  { id: '1', nom: 'L\'oiseau Lire', description: 'librarie.', detail: "remise de 5%", logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Microsoft_logo.svg/200px-Microsoft_logo.svg.png', type_activite: 'Culture/Loisirs' },
+  { id: '2', nom: 'Apple', description: 'Électronique grand public et logiciels innovants.', type_activite: 'Mobilité' },
   { id: '3', nom: 'Google', description: 'Moteur de recherche et géant de la technologie.' },
   { id: '4', nom: 'Amazon', description: 'Leader du e-commerce et du cloud computing.' },
   { id: '5', nom: 'Tesla', description: 'Véhicules électriques et énergie propre.' },
@@ -53,6 +54,16 @@ function Application() {
   };
   const [modalVisible, setModalVisible] = React.useState(false);
   const [selectedEntreprise, setSelectedEntreprise] = React.useState(null);
+  const [selectedOption, setSelectedOption] = React.useState(null);
+
+  // Filtrage des entreprises selon le filtre sélectionné
+  const filteredEntreprises = selectedOption
+    ? entreprises.filter(
+        e =>
+          e.type_activite &&
+          e.type_activite.toLowerCase() === selectedOption.toLowerCase()
+      )
+    : entreprises;
 
   return (
     <SafeAreaView style={styleFond}>
@@ -60,6 +71,12 @@ function Application() {
         barStyle={modeSombre ? 'light-content' : 'dark-content'}
         backgroundColor={styleFond.backgroundColor}
       />
+      <Dropdown
+        options={['Culture/Loisirs', 'Mobilité', 'Restauration,épicerie', 'sport']}
+        selected={selectedOption}
+        onSelect={setSelectedOption}
+      />
+
       <Text style={[styles.entete, { color: modeSombre ? '#fff' : '#222' }]}>Entreprises</Text>
 
       <ModalEntreprise
@@ -67,8 +84,9 @@ function Application() {
         entreprise={selectedEntreprise}
         onClose={() => setModalVisible(false)}
       />
+
       <FlatList
-        data={entreprises}
+        data={filteredEntreprises}
         renderItem={({ item }) => (
           <CarteEntreprise
             nom={item.nom}
