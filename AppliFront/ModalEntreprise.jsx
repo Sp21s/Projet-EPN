@@ -10,14 +10,24 @@ export default function ModalEntreprise({ visible, entreprise, onClose }) {
             {entreprise && entreprise.logo && (
               <Image source={{ uri: entreprise.logo }} style={{ width: 60, height: 60, marginBottom: 12 }} />
             )}
-            <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 8 }}>
+          <Text style={{ fontSize: 22, fontWeight: 'bold', fontFamily: 'serif', color: '#222' }}>
               {entreprise ? entreprise.nom : ''}
+          </Text>
+            <Text style={{ fontSize: 16,  marginBottom: 8 }}>
+              {entreprise ? entreprise.adresse : ''}
             </Text>
-            <Text style={{ fontSize: 16, marginBottom: 16, textAlign: 'center' }}>
+            <Text style={{ fontSize: 16, marginBottom: 8 }}>
+              {entreprise ? entreprise.codepostal : ''}
+            </Text>
+            <Text style={{ fontSize: 16,  marginBottom: 8 }}>
+              {entreprise ? entreprise.ville : ''}
+            </Text>
+            <Text style={{ fontSize: 20, marginBottom: 16,fontWeight: 'bold', textAlign: 'center' }}>
               {entreprise ? entreprise.description : ''}
             </Text>
-            <Text style={{ fontSize: 14, marginBottom: 16, textAlign: 'center' }}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 8, textAlign: 'center'}}>
               {entreprise ? entreprise.detail : ''}
+              
             </Text>
           </ScrollView>
           <Button title="Fermer" onPress={onClose} />
