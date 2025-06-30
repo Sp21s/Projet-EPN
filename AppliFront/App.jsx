@@ -94,7 +94,7 @@ function Application() {
         style={styles.fab}
         onPress={() => setModalAjoutVisible(true)}
       >
-        <Icon name="add" size={32} color="#fff" />
+        <Icon name="add-circle" size={32} color="#fff" />
       </TouchableOpacity>
 
       {/* MODAL POUR LE FORMULAIRE */}
