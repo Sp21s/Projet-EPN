@@ -35,6 +35,10 @@ class Job
     #[ORM\Column(type: Types::TEXT)]
     private ?string $detail_offre_ferme = null;
 
+    #[ORM\ManyToOne(inversedBy: 'jobs')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -127,6 +131,18 @@ class Job
     public function setDetailOffreFerme(string $detail_offre_ferme): static
     {
         $this->detail_offre_ferme = $detail_offre_ferme;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }

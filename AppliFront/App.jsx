@@ -1,5 +1,6 @@
 import React from 'react';
 import ModalEntreprise from './ModalEntreprise';
+import Formulaire_ajout from './Formulaire_ajout';
 import {
   ScrollView,
   StatusBar,
@@ -15,6 +16,7 @@ import {
   Modal,
   Button,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const entreprises = [
   { id: '1', nom: 'Libraire L\'oiseau Lire', description: 'librarie.', detail: "remise de 5%", logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Microsoft_logo.svg/200px-Microsoft_logo.svg.png' },
@@ -32,6 +34,7 @@ const entreprises = [
   { id: '13', nom: 'Adobe', description: 'Logiciels de création et de design.' },
   { id: '14', nom: 'Spotify', description: 'Service de streaming musical.' },
 ];
+
 
 function CarteEntreprise({ nom, description, logo, onPress }) {
   return (
@@ -53,7 +56,7 @@ function Application() {
   };
   const [modalVisible, setModalVisible] = React.useState(false);
   const [selectedEntreprise, setSelectedEntreprise] = React.useState(null);
-
+  const [modalAjoutVisible, setModalAjoutVisible] = React.useState(false);
   return (
     <SafeAreaView style={styleFond}>
       <StatusBar
@@ -72,6 +75,9 @@ function Application() {
         renderItem={({ item }) => (
           <CarteEntreprise
             nom={item.nom}
+            adresse={item.adresse}
+            codepostal={item.codepostal}
+            ville={item.ville}
             description={item.description}
             logo={item.logo}
             onPress={() => {
@@ -84,6 +90,23 @@ function Application() {
         numColumns={2}
         contentContainerStyle={styles.grille}
       />
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => setModalAjoutVisible(true)}
+      >
+        <Icon name="add-circle" size={32} color="#fff" />
+      </TouchableOpacity>
+
+      {/* MODAL POUR LE FORMULAIRE */}
+     <Modal
+        visible={modalAjoutVisible}
+        animationType="slide"
+        onRequestClose={() => setModalAjoutVisible(false)}
+      >
+        <Formulaire_ajout onValider={() => setModalAjoutVisible(false)} />
+        
+      </Modal>
+
     </SafeAreaView>
   );
 }
@@ -91,6 +114,37 @@ function Application() {
 const TAILLE_CARTE = Dimensions.get('window').width / 2 - 30;
 
 const styles = StyleSheet.create({
+ fab: {
+  position: 'absolute',
+  right: 24,
+  bottom: 32,
+  backgroundColor: '#0055A4',
+  width: 64,
+  height: 64,
+  borderRadius: 32,
+  justifyContent: 'center',
+  alignItems: 'center',
+  elevation: 8,
+  zIndex: 10,
+  borderWidth: 3,
+  borderColor: '#fff',
+  shadowColor: '#0055A4',
+  shadowOpacity: 0.35,
+  shadowRadius: 10,
+  shadowOffset: { width: 0, height: 6 },
+
+
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 40,
+    right: 24,
+    backgroundColor: '#0055A4',
+    borderRadius: 20,
+    padding: 8,
+    zIndex: 20,
+  },
+
   entete: {
     fontSize: 28,
     fontWeight: 'bold',
