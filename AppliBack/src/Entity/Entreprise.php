@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\JobRepository;
+use App\Repository\EntrepriseRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: JobRepository::class)]
-class Job
+#[ORM\Entity(repositoryClass: EntrepriseRepository::class)]
+class Entreprise
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -23,7 +23,7 @@ class Job
     #[ORM\Column(length: 255)]
     private ?string $adresse = null;
 
-    #[ORM\Column(length: 5)]
+    #[ORM\Column(length: 255)]
     private ?string $code_postal = null;
 
     #[ORM\Column(length: 255)]
@@ -35,20 +35,16 @@ class Job
     #[ORM\Column(type: Types::TEXT)]
     private ?string $detail_offre_ferme = null;
 
-    #[ORM\ManyToOne(inversedBy: 'jobs')]
+    #[ORM\ManyToOne(inversedBy: 'entreprises')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $logo = null;
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function setId(int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     public function getDetail(): ?string
@@ -135,15 +131,26 @@ class Job
         return $this;
     }
 
-    public function getCategory(): ?Category
+    public function getCategory(): ?CAtegory
     {
         return $this->category;
     }
 
-    public function setCategory(?Category $category): static
+    public function setCategory(?CAtegory $category): static
     {
         $this->category = $category;
 
+        return $this;
+    }
+
+    public function getLogo(): ?string
+    {
+        return $this->logo;
+    }
+
+    public function setLogo(?string $logo): static
+    {
+        $this->logo = $logo;
         return $this;
     }
 }
