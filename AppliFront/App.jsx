@@ -1,6 +1,7 @@
 import React from 'react';
 import ModalEntreprise from './ModalEntreprise';
 import Formulaire_ajout from './Formulaire_ajout';
+import Dropdown from './Dropdown';
 import {
   ScrollView,
   StatusBar,
@@ -18,29 +19,14 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const entreprises = [
-  { id: '1', nom: 'Libraire L\'oiseau Lire', description: 'librarie.', detail: "remise de 5%", logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Microsoft_logo.svg/200px-Microsoft_logo.svg.png' },
-  { id: '2', nom: 'Apple', description: 'Électronique grand public et logiciels innovants.' },
-  { id: '3', nom: 'Google', description: 'Moteur de recherche et géant de la technologie.' },
-  { id: '4', nom: 'Amazon', description: 'Leader du e-commerce et du cloud computing.' },
-  { id: '5', nom: 'Tesla', description: 'Véhicules électriques et énergie propre.' },
-  { id: '6', nom: 'Samsung', description: 'Marque de téléphone bien chinoise' },
-  { id: '7', nom: 'Facebook', description: 'Réseau social et applications de communication.' },
-  { id: '8', nom: 'IBM', description: 'Solutions informatiques et cloud pour entreprises.' },
-  { id: '9', nom: 'Intel', description: 'Leader des processeurs et technologies informatiques.' },
-  { id: '10', nom: 'Nvidia', description: 'Pionnier des cartes graphiques et de l\'IA.' },
-  { id: '11', nom: 'Sony', description: 'Électronique grand public et divertissement.' },
-  { id: '12', nom: 'Oracle', description: 'Solutions de base de données et cloud pour entreprises.' },
-  { id: '13', nom: 'Adobe', description: 'Logiciels de création et de design.' },
-  { id: '14', nom: 'Spotify', description: 'Service de streaming musical.' },
-];
-
-
 function CarteEntreprise({ nom, description, logo, onPress }) {
+  const isValidLogo = logo && (logo.startsWith('http://') || logo.startsWith('https://'));
   return (
     <TouchableOpacity style={styles.carte} onPress={onPress}>
-      {logo && (
-        <Image source={{ uri: logo }} style={{ width: 40, height: 40, marginBottom: 8 }} />
+      {isValidLogo ? (
+        <Image source={{ uri: logo }} style={{ width: 40, height: 60, marginBottom: 8 }} />
+      ) : (
+        <View style={{ width: 60, height: 80, marginBottom: 8, backgroundColor: '#ccc', borderRadius: 8 }} />
       )}
       <Text style={styles.nomEntreprise}>{nom}</Text>
       <Text style={styles.descriptionEntreprise}>{description}</Text>
@@ -57,11 +43,45 @@ function Application() {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [selectedEntreprise, setSelectedEntreprise] = React.useState(null);
   const [modalAjoutVisible, setModalAjoutVisible] = React.useState(false);
+  const [selectedOption, setSelectedOption] = React.useState(null);
+  const [entreprises, setEntreprises] = React.useState([]); // <-- Ajout
+
+  // Chargement des entreprises depuis l'API
+  React.useEffect(() => {
+    fetch('http://10.0.2.2:8000/entreprise')
+      .then(res => {
+        if (!res.ok) throw new Error('API non disponible');
+        return res.json();
+      })
+      .then(data => {
+        setEntreprises(data);
+        console.log('Entreprises reçues:', data);
+      })
+      .catch((err) => {
+        setEntreprises([]);
+        console.error('Erreur lors du fetch:', err);
+      });
+  }, []);
+
+  // Filtrage dynamique
+  const filteredEntreprises = selectedOption
+    ? entreprises.filter(
+        e =>
+          e.category &&
+          e.category.toLowerCase() === selectedOption.toLowerCase()
+      )
+    : entreprises;
+
   return (
     <SafeAreaView style={styleFond}>
       <StatusBar
         barStyle={modeSombre ? 'light-content' : 'dark-content'}
         backgroundColor={styleFond.backgroundColor}
+      />
+       <Dropdown
+        options={['Culture/Loisirs', 'Mobilité', 'Restauration,épicerie', 'sport']}
+        selected={selectedOption}
+        onSelect={setSelectedOption}
       />
       <Text style={[styles.entete, { color: modeSombre ? '#fff' : '#222' }]}>Entreprises</Text>
 
@@ -71,14 +91,14 @@ function Application() {
         onClose={() => setModalVisible(false)}
       />
       <FlatList
-        data={entreprises}
+        data={filteredEntreprises}
         renderItem={({ item }) => (
           <CarteEntreprise
-            nom={item.nom}
+            nom={item.raison_social}
             adresse={item.adresse}
             codepostal={item.codepostal}
             ville={item.ville}
-            description={item.description}
+            description={item.detail}
             logo={item.logo}
             onPress={() => {
               setSelectedEntreprise(item);
@@ -86,7 +106,7 @@ function Application() {
             }}
           />
         )}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.id?.toString() || item.nom}
         numColumns={2}
         contentContainerStyle={styles.grille}
       />
@@ -181,6 +201,8 @@ const styles = StyleSheet.create({
     color: '#555',
     textAlign: 'center',
   },
+
 });
+
 
 export default Application;

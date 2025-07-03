@@ -20,14 +20,15 @@ class Category
     private ?string $libelle = null;
 
     /**
-     * @var Collection<int, Job>
+     * @var Collection<int, Entreprise>
      */
-    #[ORM\OneToMany(targetEntity: Job::class, mappedBy: 'category')]
-    private Collection $jobs;
+    #[ORM\OneToMany(targetEntity: Entreprise::class, mappedBy: 'category')]
+    private Collection $entreprises;
+
 
     public function __construct()
     {
-        $this->jobs = new ArrayCollection();
+        $this->entreprises = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -48,32 +49,33 @@ class Category
     }
 
     /**
-     * @return Collection<int, Job>
+     * @return Collection<int, Entreprise>
      */
-    public function getJobs(): Collection
+    public function getEntreprises(): Collection
     {
-        return $this->jobs;
+        return $this->entreprises;
     }
 
-    public function addJob(Job $job): static
+    public function addEntreprise(Entreprise $entreprise): static
     {
-        if (!$this->jobs->contains($job)) {
-            $this->jobs->add($job);
-            $job->setCategory($this);
+        if (!$this->entreprises->contains($entreprise)) {
+            $this->entreprises->add($entreprise);
+            $entreprise->setCategory($this);
         }
 
         return $this;
     }
 
-    public function removeJob(Job $job): static
+    public function removeEntreprise(Entreprise $entreprise): static
     {
-        if ($this->jobs->removeElement($job)) {
+        if ($this->entreprises->removeElement($entreprise)) {
             // set the owning side to null (unless already changed)
-            if ($job->getCategory() === $this) {
-                $job->setCategory(null);
+            if ($entreprise->getCategory() === $this) {
+                $entreprise->setCategory(null);
             }
         }
 
         return $this;
     }
+
 }
